@@ -17,27 +17,32 @@ def mysql_exec(sql,flag):
     port = config.get("Settings","port")
 
     #:连接数据库
-    conn = MySQLdb.connect(host=host, user=user,passwd=passwd,port=int(port))
-    cur = conn.cursor()
-    conn.select_db('network')
+    try:
+        conn = MySQLdb.connect(host=host, user=user,passwd=passwd,port=int(port))
+        cur = conn.cursor()
+        conn.select_db('network')
 
-    #:执行sql命令
-    cur.execute(sql)
-    conn.commit()
+        #:执行sql命令
+        cur.execute(sql)
+        conn.commit()
 
-    #:获取结果
-    if flag == 'all':
-        result = cur.fetchall()
-    elif flag == 'one':
-        result = cur.fetchone()
-    else:
+        #:获取结果
+        if flag == 'all':
+            result = cur.fetchall()
+        elif flag == 'one':
+            result = cur.fetchone()
+        else:
+            result = 'Failed'
+    except MySQLdb.Error as e:
+        print("Mysql Error%d:%s" % (e.args[0],e.args[1]))
         result = 'Failed'
+    finally:
     
-    #:关闭数据库连接
-    cur.close()
-    conn.close()
+        #:关闭数据库连接
+        cur.close()
+        conn.close()
 
-    return result
+        return result
 
 if __name__ == '__main__':
     sql = 'select * from ips'
