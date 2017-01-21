@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-
+#coding:utf-8
 import MySQLdb
 import configparser
 
-def mysql_exec(sql,flag):
+def mysql_execute(sql,flag):
     """
     执行sql命令
     """
@@ -24,13 +24,15 @@ def mysql_exec(sql,flag):
 
         #:执行sql命令
         cur.execute(sql)
-        conn.commit()
 
         #:获取结果
-        if flag == 'all':
+        if flag == 'fetchall':
             result = cur.fetchall()
-        elif flag == 'one':
+        elif flag == 'fetchone':
             result = cur.fetchone()
+        elif flag == 'commit':
+            conn.commit()
+            result = 'commit'
         else:
             result = 'Failed'
     except MySQLdb.Error as e:
@@ -47,4 +49,4 @@ def mysql_exec(sql,flag):
 if __name__ == '__main__':
     sql = 'select * from ips'
     for i in range(5):
-        print(mysql_exec(sql,'one')) 
+        print(mysql_execute(sql,'fetchone')) 
