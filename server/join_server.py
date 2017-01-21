@@ -1,7 +1,4 @@
-#listening the port you give
-#if the message got from slave is join,execute task.py and then print working
-#else print error
-
+#!/usr/bin/python
 import socket
 import sys
 import checkstatus
