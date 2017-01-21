@@ -3,7 +3,7 @@
 import MySQLdb
 import configparser
 
-def mysql_exec(sql):
+def mysql_exec(sql,flag):
     """
     执行sql命令
     """
@@ -21,10 +21,17 @@ def mysql_exec(sql):
     cur = conn.cursor()
     conn.select_db('network')
 
-    #执行sql命令
+    #:执行sql命令
     cur.execute(sql)
     conn.commit()
-    result = cur.fetchall()
+
+    #:获取结果
+    if flag == 'all':
+        result = cur.fetchall()
+    elif flag == 'one':
+        result = cur.fetchone()
+    else:
+        result = 'Failed'
     
     #:关闭数据库连接
     cur.close()
@@ -35,4 +42,4 @@ def mysql_exec(sql):
 if __name__ == '__main__':
     sql = 'select * from ips'
     for i in range(5):
-        print(mysql_exec(sql)) 
+        print(mysql_exec(sql,'one')) 
