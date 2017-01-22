@@ -1,10 +1,8 @@
 #!/usr/bin/python
 #coding=utf-8
 import socket
-import sys
 import subprocess
 import re
-import time
 
 def send(host,port,msg):
     s=socket.socket(socket.AF_INET,socket.SOCK_STREAM,0)
