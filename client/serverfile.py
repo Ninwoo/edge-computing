@@ -1,26 +1,28 @@
 #!/usr/bin/python 
 #coding:utf-8 
-import SocketServer 
+import socketserver 
 import subprocess 
 import string 
 import time 
 import sys
-class MyTcpServer(SocketServer.BaseRequestHandler): 
+import mylog
+
+class MyTcpServer(socketserver.BaseRequestHandler): 
     def recvfile(self, filename): 
-        print "starting reve file!"
+        mylog.log("starting reve file!",'recvfile')
         f = open(filename, 'wb') 
-        self.request.send('ready') 
+        self.request.send('ready'.encode()) 
         while True: 
             data = self.request.recv(4096) 
-            if data == 'EOF': 
-                print "recv file success!"
+            if data == 'EOF'.encode(): 
+                mylog.log("recv file success!",'recvfile')
                 break
             f.write(data) 
         f.close() 
                                          
     def sendfile(self, filename): 
-        print "starting send file!"
-        self.request.send('ready') 
+        mylog.log("starting send file!",'sendfile')
+        self.request.send('ready'.encode()) 
         time.sleep(1) 
         f = open(filename, 'rb') 
         while True: 
@@ -30,17 +32,17 @@ class MyTcpServer(SocketServer.BaseRequestHandler):
             self.request.send(data) 
         f.close() 
         time.sleep(1) 
-        self.request.send('EOF') 
-        print "send file success!"
+        self.request.send('EOF'.encode()) 
+        mylog.log("send file success!",'sendfile')
                                      
     def handle(self): 
-        print "get connection from :",self.client_address 
+        mylog.log("get connection from :" + self.client_address,'handle')
         while True: 
             try: 
-                data = self.request.recv(4096) 
-                print "get data:", data    
+                data = self.request.recv(4096).decode() 
+                mylog.log("get data:"+data,'handle')    
                 if not data: 
-                    print "break the connection!"
+                    mylog.log("break the connection!",'data error')
                     break                
                 else: 
                     action, filename = data.split() 
@@ -49,14 +51,14 @@ class MyTcpServer(SocketServer.BaseRequestHandler):
                     elif action == 'get': 
                         self.sendfile(filename)  
                     else: 
-                        print "get error!"
+                        mylog.log("get error!",'get')
                         continue
-            except Exception,e: 
-                print "get error at:",e 
+            except Exception as e: 
+                mylog.error_log(e,'Exception')
                                              
                                          
 if __name__ == "__main__": 
     host = ''
     port = int(sys.argv[1])
-    s = SocketServer.ThreadingTCPServer((host,port), MyTcpServer) 
+    s = socketserver.ThreadingTCPServer((host,port), MyTcpServer) 
     s.serve_forever() 
