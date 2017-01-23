@@ -36,7 +36,7 @@ class MyTcpServer(socketserver.BaseRequestHandler):
         mylog.log("send file success!",'sendfile')
                                      
     def handle(self): 
-        mylog.log("get connection from :" + self.client_address,'handle')
+        mylog.log(self.client_address,'handle')
         while True: 
             try: 
                 data = self.request.recv(4096).decode() 
