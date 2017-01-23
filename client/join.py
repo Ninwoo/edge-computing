@@ -10,7 +10,12 @@ import mylog
 i=0
 port2 = 10413
 port = 10412
-host = sys.argv[1]
+
+try:
+    host = sys.argv[1]
+except IndexError as e:
+    mylog.error_log(e,'short of index')
+    exit(1)
 
 while True:
     #:发送接入请求任务
