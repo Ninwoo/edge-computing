@@ -8,6 +8,7 @@ import sys
 import mylog
 
 class MyTcpServer(socketserver.BaseRequestHandler): 
+    #:接收文件并保存为filename
     def recvfile(self, filename): 
         mylog.log("starting reve file!",'recvfile')
         f = open(filename, 'wb') 
@@ -19,7 +20,8 @@ class MyTcpServer(socketserver.BaseRequestHandler):
                 break
             f.write(data) 
         f.close() 
-                                         
+
+    #:发送文件filename                                         
     def sendfile(self, filename): 
         mylog.log("starting send file!",'sendfile')
         self.request.send('ready'.encode()) 
