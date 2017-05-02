@@ -2,7 +2,7 @@ import MySQLdb
 
 def check():
 	try:
-		conn=MySQLdb.connect(host='123.206.77.218',user='root',passwd='123456',port=12306)
+		conn=MySQLdb.connect(host='mysql',user='root',passwd='123456',port=3306)
 
 		cur=conn.cursor()
 		conn.select_db('network')

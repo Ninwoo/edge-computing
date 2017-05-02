@@ -5,9 +5,7 @@ import configparser
 
 def mysql_execute(sql,flag):
     """
-    执行sql命令
     """
-    #:获取配置信息
     path = 'mysql.ini'
     config = configparser.ConfigParser()
     config.read(path)
@@ -16,16 +14,13 @@ def mysql_execute(sql,flag):
     passwd = config.get("Settings","passwd")
     port = config.get("Settings","port")
 
-    #:连接数据库
     try:
         conn = MySQLdb.connect(host=host, user=user,passwd=passwd,port=int(port))
         cur = conn.cursor()
         conn.select_db('network')
 
-        #:执行sql命令
         cur.execute(sql)
 
-        #:获取结果
         if flag == 'fetchall':
             result = cur.fetchall()
         elif flag == 'fetchone':
@@ -40,13 +35,12 @@ def mysql_execute(sql,flag):
         result = 'Failed'
     finally:
     
-        #:关闭数据库连接
         cur.close()
         conn.close()
 
         return result
 
 if __name__ == '__main__':
-    sql = 'select * from ips'
+    sql = 'select * from task'
     for i in range(5):
         print(mysql_execute(sql,'fetchone')) 
