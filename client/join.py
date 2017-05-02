@@ -5,12 +5,11 @@ import subprocess
 import answer
 import mylog
 '''
-循环发送任务申请，得到任务并执行
 '''
 i=0
-port2 = 10413
-port = 10412
-
+port2 = 33332
+port = 33333
+flag = False
 try:
     host = sys.argv[1]
 except IndexError as e:
@@ -18,30 +17,32 @@ except IndexError as e:
     exit(1)
 
 while True:
-    #:发送接入请求任务
     data = answer.send(host,port,'join')
     if data == 'error':
         mylog.log('connect is failed','0')
+        flag = False
         break
     if data == 'done':
-        #:接收到done，证明任务结束或没有任务，等待5s
-        time.sleep(5)
         print('done')
+        if flag:
+            timeend = time.time()
+            tm = timeend - timestart
+            print(tm)
+            flag = False
+        time.sleep(5)
         continue
-    #:获取接收到的信息
+    if not flag :
+        timestart = time.time()
+    print(data)
+    flag = True
     msg = data.split('&')
     run = msg[0]
     ids = msg[1]
-    #:执行获得的任务
     (status,output) = subprocess.getstatusoutput(run)
-    #:发送执行之后的结果
     get = answer.send(host,port2,output + '&' + ids)
-    #:判断结果是否发送成功
     '''if get == 'success':
-        #:打印日志
         mylog.log(get,ids)
     else:
         mylog.log(get,ids)
     '''
-    #:打印日志
     mylog.log(get,ids)
